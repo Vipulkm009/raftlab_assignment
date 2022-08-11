@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raftlab_assignment/home_screen_bloc/home_screen_bloc.dart';
 import 'package:raftlab_assignment/views/components/bottom_nav_item.dart';
+import 'package:raftlab_assignment/views/screen1.dart';
+import 'package:raftlab_assignment/views/screen2.dart';
+import 'package:raftlab_assignment/views/screen3.dart';
+import 'package:raftlab_assignment/views/screen4.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  int screenIndex = 0;
+  List<Widget> screens = [
+    Screen1(),
+    Screen2(),
+    Screen3(),
+    Screen4(),
+  ];
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -48,8 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          body: Center(
-            child: Text('Loading...'),
+          body: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+            builder: (context, state) {
+              if (state is HomeScreen1) return screens[0];
+              if (state is HomeScreen2) return screens[1];
+              if (state is HomeScreen3) return screens[2];
+              return screens[3];
+            },
           ),
           bottomNavigationBar: Card(
             elevation: 1.0,
@@ -57,12 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 60,
               decoration: BoxDecoration(
                 color: Colors.white70,
-                // border: Border(
-                //   top: BorderSide(
-                //     color: Colors.black,
-                //     width: 0.1,
-                //   ),
-                // ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
