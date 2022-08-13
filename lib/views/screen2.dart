@@ -131,7 +131,6 @@ class Screen2 extends StatelessWidget {
 
   Future<List<APIDetails>> fetchData(String category) async {
     categories = await APIDetailsDatabase.instance.getCategories();
-    print(categories);
     return await APIDetailsDatabase.instance.readAllNotes(category);
   }
 }

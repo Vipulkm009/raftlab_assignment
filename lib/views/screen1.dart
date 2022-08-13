@@ -23,38 +23,38 @@ class Screen1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height - 60,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height - 220,
-            child: BlocConsumer<InternetBloc, InternetState>(
-              listener: (context, state) {
-                if (state is InternetGained) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text(
-                      'Internet Connected...',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    backgroundColor: Colors.green,
-                  ));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text(
-                      'Internet Disconnected...',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    backgroundColor: Colors.red,
-                  ));
-                }
-              },
-              builder: (context, state) {
-                if (state is InternetGained) {
-                  return BlocConsumer<Screen1Bloc, Screen1State>(
+      child: BlocConsumer<InternetBloc, InternetState>(
+        listener: (context, state) {
+          if (state is InternetGained) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                'Internet Connected...',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              backgroundColor: Colors.green,
+            ));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                'Internet Disconnected...',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              backgroundColor: Colors.red,
+            ));
+          }
+        },
+        builder: (context, internetState) {
+          if (internetState is InternetGained) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height - 220,
+                  child: BlocConsumer<Screen1Bloc, Screen1State>(
                     listener: (context, state) {
                       if (state is Screen1Initial) {
                         ScaffoldMessenger.of(context)
@@ -115,111 +115,113 @@ class Screen1 extends StatelessWidget {
                         },
                       );
                     },
-                  );
-                }
-                return const Center(
-                  child: Text('Internet Not Connected...'),
-                );
-              },
-            ),
-          ),
-          Container(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                BlocBuilder<Screen1Bloc, Screen1State>(
-                  builder: (context, state) {
-                    return InkWell(
-                      onTap: () {
-                        if (state is Screen1Initial) {
-                          BlocProvider.of<Screen1Bloc>(context)
-                              .add(Screen1FetchEvent());
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 24.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: state is Screen1Initial
-                              ? Colors.black
-                              : Colors.black45,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: const Text(
-                          'Fetch Data',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                  ),
                 ),
-                BlocBuilder<Screen1Bloc, Screen1State>(
-                  builder: (context, state) {
-                    return InkWell(
-                      onTap: () async {
-                        if (state is Screen1Fetched) {
-                          BlocProvider.of<Screen1Bloc>(context)
-                              .add(Screen1SavingEvent());
-                          showCupertinoModalPopup(
-                              context: context,
-                              builder: ((context) => const Scaffold(
-                                    backgroundColor: Colors.transparent,
-                                    body: Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  )));
-                          // final rows =
-                          //     await APIDetailsDatabase.instance.clear();
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Saving...'),
-                          ));
-                          data.forEach((apiDetail) async {
-                            final detail = await APIDetailsDatabase.instance
-                                .create(apiDetail);
-                            print(detail.id);
-                          });
-                          await Future.delayed(Duration(seconds: 20));
-                          Navigator.of(context).pop();
-                          BlocProvider.of<Screen1Bloc>(context)
-                              .add(Screen1SavedEvent());
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 24.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: state is Screen1Fetched
-                              ? Colors.black
-                              : Colors.black45,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: const Text(
-                          'Save Data',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
-                          ),
-                        ),
+                Container(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      BlocBuilder<Screen1Bloc, Screen1State>(
+                        builder: (context, state) {
+                          return InkWell(
+                            onTap: () {
+                              if (state is Screen1Initial) {
+                                BlocProvider.of<Screen1Bloc>(context)
+                                    .add(Screen1FetchEvent());
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 24.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: state is Screen1Initial
+                                    ? Colors.black
+                                    : Colors.black45,
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              child: const Text(
+                                'Fetch Data',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                      BlocBuilder<Screen1Bloc, Screen1State>(
+                        builder: (context, state) {
+                          return InkWell(
+                            onTap: () async {
+                              if (state is Screen1Fetched) {
+                                BlocProvider.of<Screen1Bloc>(context)
+                                    .add(Screen1SavingEvent());
+                                showCupertinoModalPopup(
+                                    context: context,
+                                    builder: ((context) => const Scaffold(
+                                          backgroundColor: Colors.transparent,
+                                          body: Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )));
+                                // final rows =
+                                //     await APIDetailsDatabase.instance.clear();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text('Saving...'),
+                                ));
+                                data.forEach((apiDetail) async {
+                                  final detail = await APIDetailsDatabase
+                                      .instance
+                                      .create(apiDetail);
+                                  print(detail.id);
+                                });
+                                await Future.delayed(Duration(seconds: 20));
+                                Navigator.of(context).pop();
+                                BlocProvider.of<Screen1Bloc>(context)
+                                    .add(Screen1SavedEvent());
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 24.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: state is Screen1Fetched
+                                    ? Colors.black
+                                    : Colors.black45,
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              child: const Text(
+                                'Save Data',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          }
+          return const Center(
+            child: Text('Internet Not Connected...'),
+          );
+        },
       ),
     );
   }
