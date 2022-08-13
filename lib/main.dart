@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:raftlab_assignment/home_screen_bloc/home_screen_bloc.dart';
+import 'package:raftlab_assignment/blocs/home_screen_bloc/home_screen_bloc.dart';
+import 'package:raftlab_assignment/blocs/internet_bloc/internet_bloc.dart';
+import 'package:raftlab_assignment/blocs/screen1_bloc/screen1_bloc.dart';
 import 'package:raftlab_assignment/views/home_screen.dart';
 
 void main() {
@@ -13,8 +15,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeScreenBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => HomeScreenBloc(),
+        ),
+        BlocProvider(
+          create: (context) => InternetBloc(),
+        ),
+        BlocProvider(
+          create: (context) => Screen1Bloc(),
+        )
+      ],
       child: MaterialApp(
         title: 'Raftlab Assignment',
         theme: ThemeData(
