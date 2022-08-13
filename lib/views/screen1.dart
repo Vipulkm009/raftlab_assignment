@@ -177,8 +177,8 @@ class Screen1 extends StatelessWidget {
                                       ),
                                     ),
                                   )));
-                          final rows =
-                              await APIDetailsDatabase.instance.clear();
+                          // final rows =
+                          //     await APIDetailsDatabase.instance.clear();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text('Saving...'),
                           ));

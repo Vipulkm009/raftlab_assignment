@@ -14,8 +14,8 @@ class APICard extends StatelessWidget {
       backgroundColor: Colors.black,
       disabledColor: Colors.black87,
       selectedColor: Colors.black87,
-      isEnabled: false,
-      selected: true,
+      // isEnabled: false,
+      // selected: true,
       avatar: Icon(
         icon,
         size: 14.0,

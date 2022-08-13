@@ -90,14 +90,24 @@ CREATE TABLE $tableDetails (
     }
   }
 
-  Future<List<APIDetails>> readAllNotes() async {
+  Future<List<APIDetails>> readAllNotes(String category) async {
     final db = await instance.database;
 
     final orderBy = '${DetailsFields.id} ASC';
     // final result =
     //     await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
 
-    final result = await db.query(tableDetails, orderBy: orderBy);
+    final result = category.isNotEmpty
+        ? await db.query(
+            tableDetails,
+            where: 'Category = ?',
+            whereArgs: [category],
+            orderBy: orderBy,
+          )
+        : await db.query(
+            tableDetails,
+            orderBy: orderBy,
+          );
 
     return result.map((json) => APIDetails.fromDB(json)).toList();
   }
@@ -111,6 +121,19 @@ CREATE TABLE $tableDetails (
       where: '${DetailsFields.id} = ?',
       whereArgs: [apiDetails.id],
     );
+  }
+
+  Future<List<String>> getCategories() async {
+    final db = await instance.database;
+
+    final result = await db.query(
+      tableDetails,
+      distinct: true,
+      columns: ['Category'],
+    );
+    return result.map((data) {
+      return data['Category'].toString();
+    }).toList();
   }
 
   Future<int> delete(int id) async {
